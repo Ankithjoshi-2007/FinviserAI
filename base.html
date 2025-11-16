@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINVISER AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-family: 'Montserrat', sans-serif;
+            
+            /* Light Mode - Cool & Professional */
+            --primary-light: #005f73; /* Deep blue */
+            --secondary-light: #0a9396; /* Teal */
+            --background-light: #e9d8a6; /* Pale yellow */
+            --surface-light: #ee9b00; /* Amber */
+            --text-light: #001219; /* Almost black */
+            --accent-light: #94d2bd; /* Light sea green */
+
+            /* Dark Mode - Vibrant & Futuristic */
+            --primary-dark: #9b5de5; /* Bright purple */
+            --secondary-dark: #f15bb5; /* Magenta */
+            --background-dark: #001219; /* Very dark blue */
+            --surface-dark: #005f73; /* Deep blue */
+            --text-dark: #feeafa; /* Light pink */
+            --accent-dark: #00f5d4; /* Bright cyan */
+
+            /* Default to Light Mode */
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --background: var(--background-light);
+            --surface: var(--surface-light);
+            --text: var(--text-light);
+            --accent: var(--accent-light);
+        }
+
+        body.dark-mode {
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --background: var(--background-dark);
+            --surface: var(--surface-dark);
+            --text: var(--text-dark);
+            --accent: var(--accent-dark);
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            color: var(--text);
+            transition: background-color 0.5s, color 0.5s;
+        }
+        header {
+            background-color: var(--surface);
+            color: var(--text);
+            padding: 1em 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-bottom: 3px solid var(--primary);
+        }
+        .header-title h1 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .header-actions button {
+            background-color: var(--primary);
+            color: var(--background);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .header-actions button:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .theme-switcher {
+            background: none;
+            border: none;
+            font-size: 1.8em;
+            cursor: pointer;
+            color: var(--text);
+            transition: transform 0.3s;
+        }
+        .theme-switcher:hover {
+            transform: rotate(360deg);
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: var(--primary);
+            padding: 0.5em 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        nav a {
+            color: var(--background);
+            padding: 14px 25px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav a:hover, nav a.active {
+            background-color: var(--accent);
+            color: var(--text);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--surface);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            width: 80%;
+            max-width: 400px;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        .close {
+            color: var(--text);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--secondary);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            margin: 10px 0;
+            color: var(--text);
+        }
+
+        .modal-content input[type="text"],
+        .modal-content input[type="email"],
+        .modal-content input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background-color: var(--background);
+            color: var(--text);
+            border: 2px solid var(--secondary);
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .modal-content input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--secondary);
+            color: var(--background);
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .modal-content input[type="submit"]:hover {
+            background-color: var(--primary);
+        }
+
+        .modal-content a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .modal-content a:hover {
+            color: var(--primary);
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .flash {
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        }
+
+        .flash.success {
+            background-color: #4CAF50;
+            color: white;
+            border-left: 4px solid #2E7D32;
+        }
+
+        .flash.error {
+            background-color: #f44336;
+            color: white;
+            border-left: 4px solid #c62828;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            from { 
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to { 
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-title">
+            <h1>FINVISER AI</h1>
+        </div>
+        <div class="header-actions">
+            <button id="login-btn">Login</button>
+            <button id="signup-btn">Sign Up</button>
+            <button class="theme-switcher" id="theme-switcher-btn">🌙</button>
+        </div>
+    </header>
+    <nav>
+        <a href="{{ url_for('home') }}" class="active">Home</a>
+        <a href="#ai-chat" data-section="ai-chat">AI CHAT</a>
+        <a href="#about-us" data-section="about-us">ABOUT US</a>
+    </nav>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    {% block content %}{% endblock %}
+
+    <!-- Modals -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-login">&times;</span>
+            <h2>Login</h2>
+            <form action="{{ url_for('login') }}" method="post">
+                <p>Email: </p>
+                <p><input type="email" name="email" required /></p>
+                <p>Password: </p>
+                <p><input type="password" name="password" required /></p>
+                <p><input type="submit" value="Login" /></p>
+            </form>
+            <p style="text-align: center;">Don't have an account? <a href="#" id="show-signup">Sign up here</a></p>
+        </div>
+    </div>
+
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-signup">&times;</span>
+            <h2>Sign Up</h2>
+            <form action="{{ url_for('signup') }}" method="post">
+                <p>Name: </p>
+                <p><input type="text" name="nm" required /></p>
+                <p>Email: </p>
+                <p><input type="email" name="email" required /></p>
+                <p>Password: </p>
+                <p><input type="password" name="password" required /></p>
+                <p><input type="submit" value="Sign Up" /></p>
+            </form>
+            <p style="text-align: center;">Already have an account? <a href="#" id="show-login">Login here</a></p>
+        </div>
+    </div>
+   
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Modal logic
+            const loginModal = document.getElementById('login-modal');
+            const signupModal = document.getElementById('signup-modal');
+            const loginBtn = document.getElementById('login-btn');
+            const signupBtn = document.getElementById('signup-btn');
+            const closeLogin = document.getElementById('close-login');
+            const closeSignup = document.getElementById('close-signup');
+            const showSignup = document.getElementById('show-signup');
+            const showLogin = document.getElementById('show-login');
+
+            if(loginBtn) loginBtn.onclick = () => loginModal.style.display = 'block';
+            if(signupBtn) signupBtn.onclick = () => signupModal.style.display = 'block';
+            if(closeLogin) closeLogin.onclick = () => loginModal.style.display = 'none';
+            if(closeSignup) closeSignup.onclick = () => signupModal.style.display = 'none';
+
+            if(showSignup) showSignup.onclick = (e) => {
+                e.preventDefault();
+                loginModal.style.display = 'none';
+                signupModal.style.display = 'block';
+            };
+
+            if(showLogin) showLogin.onclick = (e) => {
+                e.preventDefault();
+                signupModal.style.display = 'none';
+                loginModal.style.display = 'block';
+            };
+
+            window.onclick = (event) => {
+                if (event.target == loginModal) {
+                    loginModal.style.display = 'none';
+                }
+                if (event.target == signupModal) {
+                    signupModal.style.display = 'none';
+                }
+            };
+
+            // Show modal based on flash messages or URL params
+            {% if show_login %}
+            if(loginModal) loginModal.style.display = 'block';
+            {% endif %}
+
+            // Auto-hide flash messages
+            const flashMessages = document.querySelectorAll('.flash');
+            flashMessages.forEach(flash => {
+                setTimeout(() => {
+                    flash.style.opacity = '0';
+                    setTimeout(() => flash.remove(), 500);
+                }, 5000); // Disappear after 5 seconds
+            });
+
+            // Theme switcher logic
+            const themeSwitcherBtn = document.getElementById('theme-switcher-btn');
+            const body = document.body;
+
+            if(themeSwitcherBtn) {
+                const currentTheme = localStorage.getItem('theme');
+                if (currentTheme === 'dark') {
+                    body.classList.add('dark-mode');
+                    themeSwitcherBtn.textContent = '☀️';
+                }
+
+                themeSwitcherBtn.addEventListener('click', () => {
+                    body.classList.toggle('dark-mode');
+                    
+                    if (body.classList.contains('dark-mode')) {
+                        localStorage.setItem('theme', 'dark');
+                        themeSwitcherBtn.textContent = '☀️';
+                    } else {
+                        localStorage.setItem('theme', 'light');
+                        themeSwitcherBtn.textContent = '🌙';
+                    }
+                });
+            }
+
+            // Navigation logic for single-page sections
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = document.querySelectorAll('section');
+
+            navLinks.forEach(link => {
+                if (link.hasAttribute('data-section')) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        navLinks.forEach(nav => nav.classList.remove('active'));
+                        link.classList.add('active');
+
+                        const targetSectionId = link.getAttribute('data-section');
+                        sections.forEach(section => {
+                            section.id === targetSectionId 
+                                ? section.style.display = 'block' 
+                                : section.style.display = 'none';
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

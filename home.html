@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}HOME PAGE{% endblock %}
+
+{% block content %}
+
+<div class="tab-container">
+    <div class="tab-buttons">
+        <button class="tab-button active" data-tab="home-overview">Home</button>
+        <button class="tab-button" data-tab="market-cap-explanation">Market Capitalization</button>
+        <button class="tab-button" data-tab="faqs">FAQs</button>
+        <button class="tab-button" data-tab="about-ai">About AI</button>
+    </div>
+
+    <div id="home-overview" class="tab-content active">
+        <h1 style="text-align: center;">Welcome to FINVISER AI</h1>
+
+        <section style="padding: 2em; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+            <p>FINVISER AI is your intelligent financial assistant, designed to empower you with insightful market data, personalized financial advice, and advanced analytics. Whether you're a seasoned investor or just starting your financial journey, FINVISER AI provides the tools and information you need to make informed decisions and optimize your investment strategies.</p>
+            <p>Explore real-time market trends, analyze company performance, and get tailored recommendations to achieve your financial goals. Our intuitive interface and powerful AI engine are here to guide you every step of the way.</p>
+        </section>
+    </div>
+
+    <div id="market-cap-explanation" class="tab-content">
+        <section style="padding: 2em; max-width: 800px; margin: 2em auto; background-color: var(--surface); border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 1.5em;">Understanding Market Capitalization</h2>
+          
+            <p style="margin-bottom: 2em;">Market capitalization, or "market cap," is the total value of a company's outstanding shares of stock. It's calculated by multiplying a company's shares outstanding by its current market price per share. It is used by investors to determine a company's size, rather than sales or total asset figures.</p>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 2em 0; background-color: var(--background); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <thead>
+                    <tr style="background-color: var(--primary); color: var(--background);">
+                        <th style="padding: 15px; text-align: left; font-weight: 700;">Market Cap Type</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 700;">Market Cap Range</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 700;">Characteristics</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 700;">Risk Level</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 700;">Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--secondary);">
+                        <td style="padding: 15px; font-weight: 600; color: var(--primary);">Large-Cap</td>
+                        <td style="padding: 15px;">$10+ billion</td>
+                        <td style="padding: 15px;">Well-established, industry leaders, stable growth, proven profitability</td>
+                        <td style="padding: 15px; color: #059669; font-weight: 600;">Low</td>
+                        <td style="padding: 15px;">TCS, Infosys, Apple, </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--secondary);">
+                        <td style="padding: 15px; font-weight: 600; color: var(--primary);">Mid-Cap</td>
+                        <td style="padding: 15px;">$2 - $10 billion</td>
+                        <td style="padding: 15px;">Growth phase, expanding market share, moderate risk</td>
+                        <td style="padding: 15px; color: #f59e0b; font-weight: 600;">Medium</td>
+                        <td style="padding: 15px;">HDFC Bank, Bajaj Finance, Asian Paints</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px; font-weight: 600; color: var(--primary);">Small-Cap</td>
+                        <td style="padding: 15px;">$300M - $2B</td>
+                        <td style="padding: 15px;">Younger companies, high growth potential, higher volatility</td>
+                        <td style="padding: 15px; color: #ef4444; font-weight: 600;">High</td>
+                        <td style="padding: 15px;">Zomato, Paytm, PolicyBazaar</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <div id="faqs" class="tab-content">
+        <section style="padding: 2em; max-width: 800px; margin: 2em auto; background-color: var(--surface); border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 1.5em;">Frequently Asked Questions</h2>
+
+            <h3>What is Finviser AI?</h3>
+            <p>Finviser AI is an intelligent financial assistant that provides market data, personalized financial advice, and advanced analytics to help users make informed investment decisions.</p>
+
+            <h3>How does AI assist in stock market investing?</h3>
+            <p>AI can analyze vast amounts of financial data, identify trends, predict market movements, and offer personalized investment recommendations much faster and more efficiently than human analysts. It helps in risk assessment, portfolio optimization, and identifying undervalued assets.</p>
+
+            <h3>Is Finviser AI suitable for beginners?</h3>
+            <p>Yes, Finviser AI is designed for both seasoned investors and beginners. Its intuitive interface and clear explanations make complex financial concepts accessible, guiding users through their investment journey.</p>
+
+            <h3>What kind of market data does Finviser AI provide?</h3>
+            <p>Finviser AI provides real-time market trends, company performance analysis, historical data, and various financial metrics to give you a comprehensive view of the market.</p>
+
+            <h3>Can Finviser AI guarantee profits?</h3>
+            <p>No, like any investment tool, Finviser AI cannot guarantee profits. The stock market involves inherent risks, and past performance is not indicative of future results. Finviser AI aims to provide the best possible information and analysis to aid your decision-making, but investment decisions are ultimately yours.</p>
+
+            <h3>How does Finviser AI ensure data security?</h3>
+            <p>Finviser AI prioritizes data security by employing industry-standard encryption protocols and robust security measures to protect your personal and financial information. We adhere to strict privacy policies.</p>
+        </section>
+    </div>
+
+    <div id="about-ai" class="tab-content">
+        <h1 class="mb-4">About FinViser AI</h1>
+
+        <section style="padding: 2em; max-width: 1000px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2em; margin-bottom: 3em;">
+                <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 2em; border-radius: 15px; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 0.5em;">🤖</div>
+                    <h3 style="margin-bottom: 1em;">AI-Powered Insights</h3>
+                    <p>Our advanced artificial intelligence algorithms analyze millions of data points to provide you with accurate market predictions and investment recommendations.</p>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, var(--secondary), var(--accent)); color: white; padding: 2em; border-radius: 15px; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 0.5em;">📊</div>
+                    <h3 style="margin-bottom: 1em;">Real-Time Data</h3>
+                    <p>Access live market data, real-time stock prices, and comprehensive financial analytics to make informed investment decisions.</p>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, var(--accent), var(--primary)); color: white; padding: 2em; border-radius: 15px; text-align: center;">
+                    <div style="font-size: 3em; margin-bottom: 0.5em;">🎯</div>
+                    <h3 style="margin-bottom: 1em;">Personalized Strategy</h3>
+                    <p>Get tailored investment strategies based on your risk tolerance, financial goals, and market preferences.</p>
+                </div>
+            </div>
+
+            <div style="background-color: var(--surface); padding: 2em; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2em;">
+                <h3 style="color: var(--primary); margin-bottom: 1em;">Our Mission</h3>
+                <p style="line-height: 1.8; margin-bottom: 1.5em;">
+                    At Finviser AI, we believe that everyone deserves access to professional-grade financial intelligence. Our mission is to democratize investment knowledge by providing cutting-edge AI technology that helps both novice and experienced investors make smarter financial decisions.
+                </p>
+                <p style="line-height: 1.8;">
+                    We combine the power of artificial intelligence with comprehensive market data to deliver insights that were once only available to institutional investors. Whether you're just starting your investment journey or looking to optimize your existing portfolio, Finviser AI is your trusted financial companion.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5em; margin-bottom: 2em;">
+                <div style="background-color: var(--background); padding: 1.5em; border-radius: 10px; border-left: 4px solid var(--primary);">
+                    <h4 style="color: var(--primary); margin-bottom: 0.5em;">🔍 Market Analysis</h4>
+                    <p style="font-size: 0.9em; line-height: 1.6;">Deep market analysis using machine learning algorithms to identify trends and opportunities.</p>
+                </div>
+                
+                <div style="background-color: var(--background); padding: 1.5em; border-radius: 10px; border-left: 4px solid var(--secondary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 0.5em;">📈 Portfolio Optimization</h4>
+                    <p style="font-size: 0.9em; line-height: 1.6;">AI-driven portfolio recommendations to maximize returns while managing risk effectively.</p>
+                </div>
+                
+                <div style="background-color: var(--background); padding: 1.5em; border-radius: 10px; border-left: 4px solid var(--accent);">
+                    <h4 style="color: var(--accent); margin-bottom: 0.5em;">⚡ Real-Time Updates</h4>
+                    <p style="font-size: 0.9em; line-height: 1.6;">Instant notifications and updates on market movements and your portfolio performance.</p>
+                </div>
+                
+                <div style="background-color: var(--background); padding: 1.5em; border-radius: 10px; border-left: 4px solid var(--primary);">
+                    <h4 style="color: var(--primary); margin-bottom: 0.5em;">🎓 Educational Resources</h4>
+                    <p style="font-size: 0.9em; line-height: 1.6;">Comprehensive guides and tutorials to help you understand market dynamics and investment strategies.</p>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 2em; border-radius: 15px; text-align: center;">
+                <h3 style="margin-bottom: 1em;">Why Choose Finviser AI?</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1em; margin-top: 1.5em;">
+                    <div>
+                        <div style="font-size: 2em; margin-bottom: 0.5em;">🚀</div>
+                        <h4>Cutting-Edge Technology</h4>
+                        <p style="font-size: 0.9em;">Latest AI and machine learning algorithms</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 2em; margin-bottom: 0.5em;">🛡️</div>
+                        <h4>Secure & Reliable</h4>
+                        <p style="font-size: 0.9em;">Bank-level security for your financial data</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 2em; margin-bottom: 0.5em;">🌍</div>
+                        <h4>Global Markets</h4>
+                        <p style="font-size: 0.9em;">Access to worldwide stock markets and indices</p>
+                    </div>
+                    <div>
+                        <div style="font-size: 2em; margin-bottom: 0.5em;">💡</div>
+                        <h4>Smart Insights</h4>
+                        <p style="font-size: 0.9em;">Actionable investment recommendations</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3em; padding: 2em; background-color: var(--surface); border-radius: 15px;">
+                <h3 style="color: var(--primary); margin-bottom: 1em;">Ready to Transform Your Investment Journey?</h3>
+                <p style="margin-bottom: 1.5em; line-height: 1.6;">
+                    Join thousands of investors who trust Finviser AI to guide their financial decisions. Start your journey towards smarter investing today.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1em; flex-wrap: wrap;">
+                    <button style="background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.backgroundColor='var(--secondary)'" onmouseout="this.style.backgroundColor='var(--primary)'" onclick="location.href='{{ url_for('home') }}'">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+{% endblock %}

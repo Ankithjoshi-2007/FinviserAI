@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Market Capitalization Data{% endblock %}
+{% block content %}
+<h2>Market Capitalization Classification of 15 Simulated Companies</h2>
+<div style="overflow-x:auto;">
+    {{ table_html|safe }}
+</div>
+{% endblock %}

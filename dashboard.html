@@ -1,0 +1,722 @@
+{% extends "base.html" %}
+
+{% block title %}DASHBOARD{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+    <h1 style="text-align: center; margin-bottom: 2em;">Stock Market Dashboard</h1>
+    
+    <div class="search-section">
+        <div class="search-container">
+            <input type="text" id="ticker-search" placeholder="Enter stock ticker (e.g., AAPL, MSFT, TCS)" />
+            <button id="search-btn">Search</button>
+        </div>
+        
+        <div class="popular-tickers">
+            <p>Popular tickers:</p>
+            <div class="ticker-suggestions">
+                <button class="ticker-suggestion" data-ticker="AAPL">AAPL</button>
+                <button class="ticker-suggestion" data-ticker="MSFT">MSFT</button>
+                <button class="ticker-suggestion" data-ticker="GOOGL">GOOGL</button>
+                <button class="ticker-suggestion" data-ticker="TSLA">TSLA</button>
+                <button class="ticker-suggestion" data-ticker="TCS">TCS</button>
+                <button class="ticker-suggestion" data-ticker="INFY">INFY</button>
+                
+            </div>
+        </div>
+        
+    </div>
+
+    <div id="stock-data" class="stock-data-container" style="display: none;">
+        <div class="stock-header">
+            <h2 id="stock-name"></h2>
+            <div class="stock-price">
+                <span id="current-price"></span>
+                <span id="price-change"></span>
+            </div>
+        </div>
+        
+        <div class="stock-details">
+            <div class="detail-item">
+                <label>Market Cap:</label>
+                <span id="market-cap"></span>
+            </div>
+            <div class="detail-item">
+                <label>Volume:</label>
+                <span id="volume"></span>
+            </div>
+            <div class="detail-item">
+                <label>52W High:</label>
+                <span id="high-52w"></span>
+            </div>
+            <div class="detail-item">
+                <label>52W Low:</label>
+                <span id="low-52w"></span>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="price-chart"></canvas>
+        </div>
+    </div>
+
+    <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Fetching stock data...</p>
+    </div>
+
+    <div id="error-message" class="error-message" style="display: none;">
+        <p>Error: Could not fetch data for this ticker. Please check the ticker symbol and try again.</p>
+    </div>
+
+    {% if selected_region in ['INDIA', 'EUROPE', 'NA'] and company_data_categorized %}
+    <div class="company-data-section" style="background-color: var(--surface); border-radius: 15px; padding: 2em; box-shadow: 0 8px 24px rgba(0,0,0,0.1); margin-top: 2em;">
+        <h2 style="color: var(--primary); margin-bottom: 1em; text-align: center;">COMPANY DATA ({% if selected_region == 'NA' %}NORTH AMERICA{% else %}{{ selected_region }}{% endif %} Region)</h2>
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1em;">
+                <thead>
+                    <tr style="background-color: var(--primary); color: white;">
+                        <th style="padding: 12px 15px; text-align: left;">SMALL CAP</th>
+                        <th style="padding: 12px 15px; text-align: left;">MID CAP</th>
+                        <th style="padding: 12px 15px; text-align: left;">LARGE CAP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set max_rows = [company_data_categorized['Small Cap']|length, company_data_categorized['Mid Cap']|length, company_data_categorized['Large Cap']|length] | max %}
+                    {% for i in range(max_rows) %}
+                    <tr style="border-bottom: 1px solid var(--background); background-color: var(--background);">
+                        <td style="padding: 10px 15px; color: var(--text);">
+                            {% if company_data_categorized['Small Cap']|length > i %}
+                                <div style="margin-bottom: 8px;">
+                                    <strong>{{ company_data_categorized['Small Cap'][i]['name'] }}</strong><br>
+                                    <small style="color: var(--secondary);">{{ company_data_categorized['Small Cap'][i]['ticker'] }}</small><br>
+                                    <small style="color: var(--accent);">{{ company_data_categorized['Small Cap'][i]['market_cap'] }}</small>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 10px 15px; color: var(--text);">
+                            {% if company_data_categorized['Mid Cap']|length > i %}
+                                <div style="margin-bottom: 8px;">
+                                    <strong>{{ company_data_categorized['Mid Cap'][i]['name'] }}</strong><br>
+                                    <small style="color: var(--secondary);">{{ company_data_categorized['Mid Cap'][i]['ticker'] }}</small><br>
+                                    <small style="color: var(--accent);">{{ company_data_categorized['Mid Cap'][i]['market_cap'] }}</small>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 10px 15px; color: var(--text);">
+                            {% if company_data_categorized['Large Cap']|length > i %}
+                                <div style="margin-bottom: 8px;">
+                                    <strong>{{ company_data_categorized['Large Cap'][i]['name'] }}</strong><br>
+                                    <small style="color: var(--secondary);">{{ company_data_categorized['Large Cap'][i]['ticker'] }}</small><br>
+                                    <small style="color: var(--accent);">{{ company_data_categorized['Large Cap'][i]['market_cap'] }}</small>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2em;
+}
+
+.search-section {
+    margin-bottom: 3em;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+#ticker-search {
+    flex: 1;
+    padding: 15px;
+    border: 2px solid var(--secondary);
+    border-radius: 10px;
+    background-color: var(--background);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#ticker-search:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+#search-btn {
+    padding: 15px 30px;
+    background-color: var(--primary);
+    color: var(--background);
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#search-btn:hover {
+    background-color: var(--secondary);
+    transform: translateY(-2px);
+}
+
+.time-filters {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    margin-top: 1.5em;
+}
+
+.time-filter-btn {
+    padding: 10px 20px;
+    background-color: var(--background);
+    color: var(--text);
+    border: 2px solid var(--secondary);
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.time-filter-btn:hover {
+    background-color: var(--secondary);
+    color: var(--background);
+    transform: translateY(-2px);
+}
+
+.time-filter-btn.active {
+    background-color: var(--primary);
+    color: var(--background);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.popular-tickers {
+    margin-top: 1.5em;
+    text-align: center;
+}
+
+.popular-tickers p {
+    margin-bottom: 0.5em;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.ticker-suggestions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+    flex-wrap: wrap;
+}
+
+.ticker-suggestion {
+    padding: 8px 16px;
+    background-color: var(--background);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ticker-suggestion:hover {
+    background-color: var(--primary);
+    color: var(--background);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.stock-data-container {
+    background-color: var(--surface);
+    border-radius: 15px;
+    padding: 2em;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    margin-bottom: 2em;
+}
+
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 2px solid var(--secondary);
+}
+
+.stock-price {
+    text-align: right;
+}
+
+#current-price {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+#price-change {
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-left: 1em;
+}
+
+.price-positive {
+    color: #059669;
+}
+
+.price-negative {
+    color: #ef4444;
+}
+
+.stock-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1em;
+    margin-bottom: 2em;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    background-color: var(--background);
+    border-radius: 10px;
+    border-left: 4px solid var(--primary);
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.detail-item span {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.chart-container {
+    background-color: var(--background);
+    border-radius: 10px;
+    padding: 1em;
+    margin-top: 2em;
+}
+
+.loading {
+    text-align: center;
+    padding: 3em;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--secondary);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1em;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 1em;
+    border-radius: 10px;
+    text-align: center;
+    margin: 2em 0;
+}
+
+body.dark-mode .error-message {
+    background-color: #2d1b1b;
+    border-color: #7f1d1d;
+    color: #fca5a5;
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('search-btn');
+    const tickerInput = document.getElementById('ticker-search');
+    const stockData = document.getElementById('stock-data');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    let priceChart = null;
+    let currentTicker = '';
+    let currentData = null;
+
+    // Vibrant color palette for charts
+    const chartColors = {
+        primary: '#2563eb',
+        secondary: '#059669', 
+        accent: '#dc2626',
+        warning: '#f59e0b',
+        info: '#3b82f6',
+        success: '#10b981',
+        gradient: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd']
+    };
+
+    function showLoading() {
+        loading.style.display = 'block';
+        stockData.style.display = 'none';
+        errorMessage.style.display = 'none';
+    }
+
+    function hideLoading() {
+        loading.style.display = 'none';
+    }
+
+    function showError() {
+        hideLoading();
+        errorMessage.style.display = 'block';
+        stockData.style.display = 'none';
+    }
+
+    function showStockData(data) {
+        hideLoading();
+        errorMessage.style.display = 'none';
+        
+        // Update stock information
+    document.getElementById('stock-name').textContent = `${data.name} (${tickerInput.value.toUpperCase()})`;
+    const currency = data.currency || '$';
+    let currencySymbol = '$';
+    if (currency === 'INR') currencySymbol = '₹';
+    else if (currency === 'EUR') currencySymbol = '€';
+    else if (currency === 'GBP') currencySymbol = '£';
+    else if (currency === 'JPY') currencySymbol = '¥';
+    else if (currency === 'USD') currencySymbol = '$';
+    else currencySymbol = currency;
+
+    document.getElementById('current-price').textContent = `${currencySymbol}${data.price.toFixed(2)}`;
+
+    const changeElement = document.getElementById('price-change');
+    const changeText = `${data.change >= 0 ? '+' : ''}${data.change.toFixed(2)} (${data.changePercent >= 0 ? '+' : ''}${data.changePercent.toFixed(2)}%)`;
+    changeElement.textContent = changeText;
+    changeElement.className = data.change >= 0 ? 'price-positive' : 'price-negative';
+
+    document.getElementById('market-cap').textContent = `${currencySymbol}${data.marketCap}`;
+    document.getElementById('volume').textContent = data.volume;
+    document.getElementById('high-52w').textContent = `${currencySymbol}${data.high52w.toFixed(2)}`;
+    document.getElementById('low-52w').textContent = `${currencySymbol}${data.low52w.toFixed(2)}`;
+
+    // Create chart
+    createChart(data.history);
+
+    stockData.style.display = 'block';
+    }
+
+    function getXAxisTitle(period) {
+        switch(period) {
+            case '1D': return 'Time (Hours)';
+            case '1W': return 'Date (Days)';
+            case '1M': return 'Date (Days)';
+            case '3M': return 'Date (Weeks)';
+            case '1Y': return 'Date (Months)';
+            default: return 'Time';
+        }
+    }
+
+    function createChart(priceHistory, period = '1M') {
+        const ctx = document.getElementById('price-chart').getContext('2d');
+        
+        if (priceChart) {
+            priceChart.destroy();
+        }
+
+        // Generate dynamic labels based on period with actual dates
+        let labels = [];
+        const dataLength = priceHistory.length;
+        const now = new Date();
+        
+        switch(period) {
+            case '1D':
+                // Show hours for 1 day
+                for (let i = dataLength - 1; i >= 0; i--) {
+                    const date = new Date(now.getTime() - (i * 60 * 60 * 1000)); // Subtract hours
+                    labels.push(date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                }
+                break;
+            case '1W':
+                // Show days for 1 week
+                for (let i = dataLength - 1; i >= 0; i--) {
+                    const date = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000)); // Subtract days
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                }
+                break;
+            case '1M':
+                // Show days for 1 month
+                for (let i = dataLength - 1; i >= 0; i--) {
+                    const date = new Date(now.getTime() - (i * 24 * 60 * 60 * 1000)); // Subtract days
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                }
+                break;
+            case '3M':
+                // Show weeks for 3 months
+                for (let i = dataLength - 1; i >= 0; i--) {
+                    const date = new Date(now.getTime() - (i * 7 * 24 * 60 * 60 * 1000)); // Subtract weeks
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                }
+                break;
+            case '1Y':
+                // Show months for 1 year
+                for (let i = dataLength - 1; i >= 0; i--) {
+                    const date = new Date(now.getTime() - (i * 30 * 24 * 60 * 60 * 1000)); // Subtract months (approx)
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }));
+                }
+                break;
+        }
+
+        // Determine if price is going up or down for color
+        const isPositive = priceHistory[priceHistory.length - 1] >= priceHistory[0];
+        const lineColor = isPositive ? chartColors.success : chartColors.accent;
+        const fillColor = isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(220, 38, 38, 0.1)';
+
+        priceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Stock Price',
+                    data: priceHistory,
+                    borderColor: lineColor,
+                    backgroundColor: fillColor,
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: lineColor,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 3,
+                    pointRadius: 8,
+                    pointHoverRadius: 10,
+                    pointHoverBackgroundColor: '#ffffff',
+                    pointHoverBorderColor: lineColor,
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: `Stock Price Chart - ${period} View`,
+                        color: 'var(--text)',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        padding: {
+                            bottom: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        borderColor: lineColor,
+                        borderWidth: 2,
+                        cornerRadius: 10,
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                return `${context[0].label}`;
+                            },
+                            label: function(context) {
+                                return `Price: $${context.parsed.y.toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: getXAxisTitle(period),
+                            color: 'var(--text)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10
+                            }
+                        },
+                        ticks: {
+                            color: 'var(--text)',
+                            font: {
+                                size: 11,
+                                weight: '600'
+                            },
+                            maxRotation: 45,
+                            minRotation: 0
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            drawBorder: true,
+                            borderColor: 'var(--secondary)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Stock Price ($)',
+                            color: 'var(--text)',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                right: 10
+                            }
+                        },
+                        ticks: {
+                            color: 'var(--text)',
+                            font: {
+                                size: 11,
+                                weight: '600'
+                            },
+                            callback: function(value) {
+                                return '$' + value.toFixed(2);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)',
+                            drawBorder: true,
+                            borderColor: 'var(--secondary)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function searchStock() {
+        const ticker = tickerInput.value.trim().toUpperCase();
+        
+        if (!ticker) {
+            alert('Please enter a stock ticker symbol');
+            return;
+        }
+
+        showLoading();
+        currentTicker = ticker;
+
+        // Fetch real-time data from API
+        fetch(`/api/stock/${ticker}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    currentData = result.data;
+                    showStockData(result.data);
+                } else {
+                    showError();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError();
+            });
+    }
+
+    function updateChartForPeriod(period) {
+        if (!currentData || !currentTicker) return;
+        
+        showLoading();
+        
+        // For demo purposes, we'll use the same data but with different labels
+        // In a real implementation, you'd fetch different time periods from the API
+        setTimeout(() => {
+            createChart(currentData.history, period);
+            hideLoading();
+        }, 500);
+    }
+
+    // Event listeners
+    searchBtn.addEventListener('click', searchStock);
+    
+    tickerInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchStock();
+        }
+    });
+
+    // Ticker suggestion event listeners
+    document.querySelectorAll('.ticker-suggestion').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const ticker = e.target.dataset.ticker;
+            tickerInput.value = ticker;
+            searchStock();
+        });
+    });
+
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const regionDropdown = document.getElementById('region-dropdown');
+    if (regionDropdown) {
+        const savedRegion = localStorage.getItem('selectedRegion');
+        if (savedRegion) {
+            regionDropdown.value = savedRegion;
+        }
+
+        regionDropdown.addEventListener('change', async (e) => {
+            const selectedRegion = e.target.value;
+            localStorage.setItem('selectedRegion', selectedRegion);
+
+            try {
+                const response = await fetch('/set_region', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ region: selectedRegion })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    // Reload the dashboard to display region-specific data
+                    window.location.reload(); 
+                } else {
+                    console.error('Failed to set region:', result.message);
+                }
+            } catch (error) {
+                console.error('Error setting region:', error);
+            }
+        });
+    }
+});
+
+</script>
+
+{% endblock %}

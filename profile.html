@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 700px; margin: 50px auto; background-color: var(--surface); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center;">
+    <h1 class="mb-4" style="color: var(--primary); font-size: 2.5em; margin-bottom: 25px; animation: fadeIn 1s ease-out;">User Profile</h1>
+
+    <div class="profile-info-card" style="background-color: var(--background); padding: 30px; border-radius: 10px; margin-bottom: 30px; border: 1px solid var(--primary); animation: slideIn 0.8s ease-out;">
+        <h2 class="mb-3" style="color: var(--secondary); font-size: 1.8em; border-bottom: 2px solid var(--accent); padding-bottom: 15px; margin-bottom: 25px;">Your Information</h2>
+        
+        <p style="font-size: 1.1em; margin-bottom: 15px; color: var(--text); display: flex; align-items: center; justify-content: center;">
+            <strong style="color: var(--primary); margin-right: 10px;">👤 Name:</strong> {{ current_user.name }}
+        </p>
+        <p style="font-size: 1.1em; margin-bottom: 15px; color: var(--text); display: flex; align-items: center; justify-content: center;">
+            <strong style="color: var(--primary); margin-right: 10px;">📧 Email:</strong> {{ current_user.email }}
+        </p>
+        <p style="font-size: 1.1em; color: var(--text); display: flex; align-items: center; justify-content: center;">
+            <strong style="color: var(--primary); margin-right: 10px;">🔒 Password:</strong> ******** 
+            <span style="font-size: 0.9em; color: var(--secondary); margin-left: 10px;">(hidden for security)</span>
+        </p>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('logout') }}" class="logout-button" style="display: inline-block; background-color: #e74c3c; color: white; padding: 15px 40px; border-radius: 30px; font-size: 1.2em; font-weight: bold; text-decoration: none; transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);"
+           onmouseover="this.style.backgroundColor='#c0392b'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(231, 76, 60, 0.6)';"
+           onmouseout="this.style.backgroundColor='#e74c3c'; this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(231, 76, 60, 0.4)';">
+            Logout
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    .profile-info-card:hover {
+        animation: pulse 1s infinite ease-in-out;
+    }
+</style>
